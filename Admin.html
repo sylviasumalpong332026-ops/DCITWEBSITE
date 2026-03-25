@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Archive Portal</title>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: #f0f2f5; /* Muted gray-white para sa office feel */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #333;
+    }
+
+    /* Main Container - Parang card sa office dashboard */
+    .login-container {
+      max-width: 480px;
+      width: 100%;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      border-top: 4px solid #165DFF; /* Corporate blue accent */
+    }
+
+    /* Header Section - May logo area at title */
+    .login-header {
+      padding: 30px 35px;
+      border-bottom: 1px solid #e8ebf0;
+      text-align: left;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .brand-icon {
+      width: 45px;
+      height: 45px;
+      background-color: #165DFF;
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5em;
+      margin-right: 12px;
+    }
+
+    .brand-title {
+      font-size: 1.2em;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .brand-subtitle {
+      font-size: 0.9em;
+      color: #718096;
+    }
+
+    .login-header h1 {
+      font-size: 1.6em;
+      color: #2d3748;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    /* Form Section - Maayos na spacing para sa office forms */
+    .login-form {
+      padding: 35px;
+    }
+
+    .form-group {
+      margin-bottom: 22px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.95em;
+      font-weight: 500;
+      color: #4a5568;
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: all 0.2s ease;
+      background-color: #fafbfc;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #165DFF;
+      background-color: #fff;
+      box-shadow: 0 0 0 3px rgba(22, 93, 255, 0.1);
+    }
+
+    /* Input with icon - Parang sa mga enterprise tools */
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #a0aec0;
+      font-size: 1.1em;
+    }
+
+    /* Show/Hide Password Button */
+    .toggle-password {
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Login Button - Corporate style */
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background-color: #165DFF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.05em;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      margin-bottom: 20px;
+    }
+
+    .login-btn:hover {
+      background-color: #0D47A1;
+    }
+
+    /* Error Message */
+    .error-message {
+      color: #dc2626;
+      font-size: 0.9em;
+      font-weight: 500;
+      text-align: center;
+      margin-bottom: 15px;
+      display: none;
+      padding: 10px;
+      border: 1px solid #fecdd3;
+      border-radius: 6px;
+      background-color: #fef2f2;
+    }
+
+    /* Footer Link - Professional na navigation */
+    .form-footer {
+      text-align: center;
+      font-size: 0.9em;
+    }
+
+    .nav-link {
+      color: #165DFF;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .nav-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 576px) {
+      .login-container {
+        margin: 20px;
+      }
+      .login-header, .login-form {
+        padding: 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <!-- Header na parang office system branding -->
+    <div class="login-header">
+      <div class="header-brand">
+        <div class="brand-icon">
+          <i class="fas fa-archive"></i>
+        </div>
+        <div>
+          <div class="brand-title">DCIT ARCHIVE SYSTEM</div>
+          <div class="brand-subtitle">Administrator Access Only</div>
+        </div>
+      </div>
+      <h1>Sign In to Portal</h1>
+    </div>
+
+    <!-- Form Section -->
+    <div class="login-form">
+      <div class="error-message" id="errorMsg">
+        <i class="fas fa-exclamation-circle"></i> Invalid username or password!
+      </div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username" class="form-label">Username</label>
+          <div class="input-wrapper">
+            <input type="text" id="username" class="form-input" required placeholder="Enter admin username">
+            <i class="fas fa-user input-icon"></i>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <div class="input-wrapper">
+            <input type="password" id="password" class="form-input" required placeholder="Enter admin password">
+            <button type="button" class="toggle-password input-icon" id="togglePass">
+              <i class="fas fa-eye-slash"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="login-btn">
+          <i class="fas fa-sign-in-alt"></i> Login to Dashboard
+        </button>
+      </form>
+
+      <div class="form-footer">
+        <a href="Website-DCIT.html" class="nav-link">
+          <i class="fas fa-home"></i> Back to Website
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const errorMsg = document.getElementById('errorMsg');
+    const togglePass = document.getElementById('togglePass');
+    const passwordInput = document.getElementById('password');
+
+    // Toggle Show/Hide Password
+    togglePass.addEventListener('click', function() {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      this.innerHTML = type === 'password' ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+    });
+
+    // Login Validation
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      // Default credentials
+      const validUser = "ralph";
+      const validPass = "123";
+
+      if (username === validUser && password === validPass) {
+        errorMsg.style.display = 'none';
+        window.location.href = "2..html";
+      } else {
+        errorMsg.style.display = 'block';
+        passwordInput.value = ''; // Reset password field sa error
+      }
+    });
+  </script>
+</body>
+</html>

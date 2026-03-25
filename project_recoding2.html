@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Subject Selection Form</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      padding: 30px;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: white;
+      padding: 35px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #0047ab;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .student-info {
+      background: #e8f5e9;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 1.05em;
+    }
+    .course-label {
+      background: #f8f9fa;
+      color: #28a745;
+      font-weight: 700;
+      padding: 8px;
+      border-radius: 6px;
+      text-align: center;
+      margin-bottom: 15px;
+      display: block;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: #0047ab;
+      color: white;
+    }
+    .total-row {
+      font-weight: 700;
+      background: #f8f9fa;
+      color: #0047ab;
+    }
+    .submit-btn {
+      width: 100%;
+      padding: 12px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .submit-btn:hover {
+      background: #218838;
+    }
+    .back-btn {
+      display: block;
+      width: fit-content;
+      margin: 20px auto 0;
+      text-decoration: none;
+      color: #0047ab;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1><i class="fas fa-book"></i> Subject Selection</h1>
+
+    <div class="student-info">
+      <strong>Student:</strong> <span id="displayName">-</span><br>
+      <strong>Course & Year:</strong> <span id="displayCourse">-</span><br>
+      <strong>Email:</strong> <span id="displayEmail">-</span>
+    </div>
+
+    <div id="courseLabel" class="course-label"></div>
+
+    <form id="subjectForm">
+      <table>
+        <thead>
+          <tr>
+            <th>Select</th>
+            <th>Subject Code</th>
+            <th>Subject Name</th>
+            <th>Units</th>
+            <th>Total Hours(per semester)</th>
+            <th>Lab Quantity</th>
+            <th>Year Level</th>
+          </tr>
+        </thead>
+        <tbody id="subjectTableBody"></tbody>
+        <tfoot>
+          <tr class="total-row">
+            <td colspan="3"><strong>GRAND TOTAL:</strong></td>
+            <td id="totalUnits">-</td>
+            <td id="totalHours">-</td>
+            <td id="totalLab">-</td>
+            <td>-</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <button type="submit" class="submit-btn">✅ Finalize Subject Selection</button>
+    </form>
+
+    <a href="Project_re-coding.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Registration</a>
+  </div>
+
+  <script>
+    // FULL SUBJECT LIST
+    const courseSubjects = {
+      "BSCS": [
+        { code: "CC101", name: "Introduction to Computing", units: 3, hours: 54, lab: 1, year: "1st Year" },
+        { code: "CC102", name: "Fundamentals of Programming", units: 3, hours: 54, lab: 1, year: "1st Year" },
+        { code: "CC103", name: "Computer Programming 1", units: 4, hours: 72, lab: 1, year: "1st Year" },
+        { code: "GE-MMW", name: "Mathematics in Modern World", units: 3, hours: 54, lab: 0, year: "1st Year" },
+        { code: "GE-PC", name: "Purposive Communication", units: 3, hours: 54, lab: 0, year: "1st Year" },
+        { code: "CC201", name: "Data Structures and Algorithms", units: 4, hours: 72, lab: 1, year: "2nd Year" },
+        { code: "CC202", name: "Computer Organization", units: 3, hours: 54, lab: 1, year: "2nd Year" },
+        { code: "CC203", name: "Database Management", units: 3, hours: 54, lab: 1, year: "2nd Year" },
+        { code: "GE-STS", name: "Science & Technology", units: 3, hours: 54, lab: 0, year: "2nd Year" },
+        { code: "GE-PE", name: "Physical Education 2", units: 2, hours: 36, lab: 1, year: "2nd Year" },
+        { code: "CC301", name: "Operating Systems", units: 3, hours: 54, lab: 1, year: "3rd Year" },
+        { code: "CC302", name: "Computer Networks", units: 3, hours: 54, lab: 1, year: "3rd Year" },
+        { code: "CC303", name: "Software Engineering", units: 3, hours: 54, lab: 1, year: "3rd Year" },
+        { code: "CC304", name: "Machine Learning Basics", units: 4, hours: 72, lab: 1, year: "3rd Year" },
+        { code: "GE-ENG", name: "English for Academics", units: 3, hours: 54, lab: 0, year: "3rd Year" },
+        { code: "CC401", name: "Advanced Database", units: 3, hours: 54, lab: 1, year: "4th Year" },
+        { code: "CC402", name: "Mobile App Dev", units: 4, hours: 72, lab: 1, year: "4th Year" },
+        { code: "CC403", name: "Cybersecurity", units: 3, hours: 54, lab: 1, year: "4th Year" },
+        { code: "CC404", name: "Capstone Project 1", units: 6, hours: 108, lab: 1, year: "4th Year" },
+        { code: "GE-ENV", name: "Environmental Science", units: 3, hours: 54, lab: 0, year: "4th Year" }
+      ],
+      "BSHM": [
+        { code: "HM101", name: "Intro to Hospitality", units: 3, hours: 54, lab: 0, year: "1st Year" },
+        { code: "HM102", name: "Food & Beverage", units: 4, hours: 72, lab: 1, year: "1st Year" },
+        { code: "HM103", name: "Front Office Ops", units: 3, hours: 54, lab: 1, year: "1st Year" },
+        { code: "GE-MMW", name: "Math in Modern World", units: 3, hours: 54, lab: 0, year: "1st Year" },
+        { code: "GE-PC", name: "Purposive Communication", units: 3, hours: 54, lab: 0, year: "1st Year" },
+        { code: "HM201", name: "Hotel & Restaurant Mgmt", units: 3, hours: 54, lab: 1, year: "2nd Year" },
+        { code: "HM202", name: "Tourism Planning", units: 3, hours: 54, lab: 0, year: "2nd Year" },
+        { code: "HM203", name: "Cost Control", units: 3, hours: 54, lab: 1, year: "2nd Year" },
+        { code: "GE-ETH", name: "Ethics", units: 3, hours: 54, lab: 0, year: "2nd Year" },
+        { code: "GE-PE2", name: "Physical Education 2", units: 2, hours: 36, lab: 1, year: "2nd Year" },
+        { code: "HM301", name: "Hospitality Marketing", units: 3, hours: 54, lab: 0, year: "3rd Year" },
+        { code: "HM302", name: "Convention Mgmt", units: 4, hours: 72, lab: 1, year: "3rd Year" },
+        { code: "HM303", name: "Beverage Mgmt", units: 3, hours: 54, lab: 1, year: "3rd Year" },
+        { code: "HM304", name: "HR in Hospitality", units: 3, hours: 54, lab: 0, year: "3rd Year" },
+        { code: "GE-ARTS", name: "Art Appreciation", units: 3, hours: 54, lab: 0, year: "3rd Year" },
+        { code: "HM401", name: "Hospitality Law", units: 3, hours: 54, lab: 0, year: "4th Year" },
+        { code: "HM402", name: "Strategic Mgmt", units: 4, hours: 72, lab: 0, year: "4th Year" },
+        { code: "HM403", name: "Internship", units: 6, hours: 108, lab: 1, year: "4th Year" },
+        { code: "HM404", name: "Thesis Writing", units: 3, hours: 54, lab: 0, year: "4th Year" },
+        { code: "GE-PHIL", name: "Philippine History", units: 3, hours: 54, lab: 0, year: "4th Year" }
+      ],
+      "BEED": [
+        { code: "ED101", name: "Child Development", units: 3, hours: 54, lab: 1, year: "1st Year" },
+        { code: "ED102", name: "Teaching Methods 1", units: 3, hours: 54, lab: 1, year: "1st Year" },
+        { code: "ED103", name: "English for Teachers", units: 3, hours: 54, lab: 0, year: "1st Year" },
+        { code: "GE-MMW", name: "Math in Modern World", units: 3, hours: 54, lab: 0, year: "1st Year" },
+        { code: "GE-PC", name: "Purposive Communication", units: 3, hours: 54, lab: 0, year: "1st Year" },
+        { code: "ED201", name: "Educational Psychology", units: 3, hours: 54, lab: 1, year: "2nd Year" },
+        { code: "ED202", name: "Curriculum Development", units: 3, hours: 54, lab: 0, year: "2nd Year" },
+        { code: "ED203", name: "Math for Kids", units: 3, hours: 54, lab: 1, year: "2nd Year" },
+        { code: "GE-STS", name: "Science & Technology", units: 3, hours: 54, lab: 0, year: "2nd Year" },
+        { code: "GE-PE", name: "Physical Education 2", units: 2, hours: 36, lab: 1, year: "2nd Year" },
+        { code: "ED301", name: "Classroom Management", units: 3, hours: 54, lab: 1, year: "3rd Year" },
+        { code: "ED302", name: "Assessment & Evaluation", units: 3, hours: 54, lab: 0, year: "3rd Year" },
+        { code: "ED303", name: "Filipino for Teachers", units: 3, hours: 54, lab: 0, year: "3rd Year" },
+        { code: "ED304", name: "Science for Kids", units: 3, hours: 54, lab: 1, year: "3rd Year" },
+        { code: "GE-ENG", name: "English for Academics", units: 3, hours: 54, lab: 0, year: "3rd Year" },
+        { code: "ED401", name: "Special Education", units: 3, hours: 54, lab: 1, year: "4th Year" },
+        { code: "ED402", name: "Educational Technology", units: 4, hours: 72, lab: 1, year: "4th Year" },
+        { code: "ED403", name: "Practicum 1", units: 6, hours: 108, lab: 1, year: "4th Year" },
+        { code: "ED404", name: "Action Research", units: 3, hours: 54, lab: 0, year: "4th Year" },
+        { code: "GE-ENV", name: "Environmental Science", units: 3, hours: 54, lab: 0, year: "4th Year" }
+      ]
+    };
+
+    // LOAD STUDENT DATA WHEN PAGE OPENS
+    window.onload = function() {
+      // GET DATA FROM BROWSER
+      const database = JSON.parse(localStorage.getItem('dcitEnrollmentDB')) || { students: [] };
+      const currentStudentId = localStorage.getItem('currentStudentId');
+
+      // CHECK IF DATA EXISTS
+      if (!currentStudentId || database.students.length === 0) {
+        alert("⚠️ No student data found! Please register first.");
+        window.location.href = 'student_registration.html';
+        return;
+      }
+
+      // FIND CURRENT STUDENT
+      const currentStudent = database.students.find(s => s.id == currentStudentId);
+
+      if (currentStudent) {
+        // DISPLAY STUDENT INFO
+        document.getElementById('displayName').textContent = currentStudent.fullName;
+        document.getElementById('displayCourse').textContent = `${currentStudent.course} - ${currentStudent.yearLevel}`;
+        document.getElementById('displayEmail').textContent = currentStudent.email;
+
+        // DISPLAY COURSE LABEL
+        document.getElementById('courseLabel').textContent = `${currentStudent.course} ${currentStudent.yearLevel} Subjects`;
+
+        // GET MATCHING SUBJECTS
+        const filteredSubjects = courseSubjects[currentStudent.course].filter(sub => sub.year === currentStudent.yearLevel);
+
+        // ADD SUBJECTS TO TABLE
+        const tableBody = document.getElementById('subjectTableBody');
+        filteredSubjects.forEach((sub, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td><input type="checkbox" class="subject-checkbox" data-index="${index}"></td>
+            <td>${sub.code}</td>
+            <td>${sub.name}</td>
+            <td>${sub.units}</td>
+            <td>${sub.hours}</td>
+            <td>${sub.lab}</td>
+            <td>${sub.year}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+
+        // CALCULATE TOTALS WHEN CHECKBOX IS CLICKED
+        const checkboxes = document.querySelectorAll('.subject-checkbox');
+        checkboxes.forEach(checkbox => {
+          checkbox.addEventListener('change', updateTotals);
+        });
+
+        // INITIAL TOTAL CALCULATION
+        updateTotals();
+      } else {
+        alert("⚠️ Student data not found! Please register again.");
+        window.location.href = 'student_registration.html';
+      }
+    };
+  
+
+    // FUNCTION TO UPDATE GRAND TOTALS
+    function updateTotals() {
+      const checkboxes = document.querySelectorAll('.subject-checkbox:checked');
+      let totalUnits = 0;
+      let totalHours = 0;
+      let totalLab = 0;
+
+      // Get current student's course and year
+      const course = document.getElementById('displayCourse').textContent.split(' - ')[0];
+      const year = document.getElementById('displayCourse').textContent.split(' - ')[1];
+      const filteredSubjects = courseSubjects[course].filter(sub => sub.year === year);
+
+      checkboxes.forEach(checkbox => {
+        const index = parseInt(checkbox.dataset.index);
+        const subject = filteredSubjects[index];
+        
+        if (subject) {
+          totalUnits += subject.units;
+          totalHours += subject.hours;
+          totalLab += subject.lab;
+        }
+      });
+
+      document.getElementById('totalUnits').textContent = totalUnits;
+      document.getElementById('totalHours').textContent = totalHours;
+      document.getElementById('totalLab').textContent = totalLab;
+    }
+
+    // SUBMIT FORM
+    document.getElementById('subjectForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // Get current student's course and year
+      const course = document.getElementById('displayCourse').textContent.split(' - ')[0];
+      const year = document.getElementById('displayCourse').textContent.split(' - ')[1];
+      const filteredSubjects = courseSubjects[course].filter(sub => sub.year === year);
+
+      // Get selected subjects with full details
+      const checkboxes = document.querySelectorAll('.subject-checkbox:checked');
+      const selectedSubjects = [];
+      checkboxes.forEach(checkbox => {
+        const index = parseInt(checkbox.dataset.index);
+        const subject = filteredSubjects[index];
+        
+        if (subject) {
+          selectedSubjects.push({
+            name: `${subject.code} - ${subject.name}`,
+            labQuantity: subject.lab,
+            units: subject.units,
+            totalHours: subject.hours
+          });
+        }
+      });
+
+      // Update database
+      const database = JSON.parse(localStorage.getItem('dcitEnrollmentDB')) || { students: [] };
+      const currentStudentId = localStorage.getItem('currentStudentId');
+      const currentStudent = database.students.find(s => s.id == currentStudentId);
+      
+      if (currentStudent) {
+        currentStudent.subjects = selectedSubjects;
+        localStorage.setItem('dcitEnrollmentDB', JSON.stringify(database));
+        alert("✅ Subject selection finalized successfully! Redirecting to Database Summary...");
+        window.location.href = 'thankYou.html';
+      } else {
+        alert("⚠️ Student not found! Cannot save selected subjects.");
+      }
+    });
+  </script>

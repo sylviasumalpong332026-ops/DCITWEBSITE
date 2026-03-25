@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DCIT | Courses & Programs Offered</title>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth; /* Smooth scrolling sa mga link */
+    }
+
+    /* Global Styles */
+    body {
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      color: #2D3748;
+      line-height: 1.6;
+      background-color: #F9FAFB;
+    }
+
+    /* Header Section - Natatanging Design */
+    .header-container {
+      background: linear-gradient(135deg, #0A3D62 0%, #1E6F9F 100%);
+      color: white;
+      padding: 2rem 5%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated Background Elements */
+    .header-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M21.184 20c.357-.13.72-.264 1.088-.402l1.768-.661C33.64 15.347 39.647 14 50 14c10.271 0 15.362 1.222 24.629 4.928.955.383 1.869.74 2.75 1.072h6.225c-2.51-.73-5.139-1.691-8.233-2.928C65.888 13.278 60.562 12 50 12c-10.626 0-16.855 1.397-26.66 5.063l-1.767.662c-2.475.923-4.66 1.674-6.724 2.275V20H21.184zm0-20C11.693 0 0 2.953 0 6.7V20h21.184V0zm63.58.562c-1.579 0-3.08.15-4.555.41-1.196.211-2.335.478-3.434.798C67.89 2.789 72.81 3.84 80 5.246V20h9.691V6.025c-1.11.83-2.579 1.613-4.41 2.372-1.829.76-3.76 1.327-5.784 1.672V0h-9.216z' fill='%23FFFFFF' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+      opacity: 0.3;
+      z-index: 0;
+    }
+
+    .header-container > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .header-container img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid white;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      margin-bottom: 1rem;
+    }
+
+    .school-name {
+      font-size: 2.2rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.3rem;
+    }
+
+    .school-address {
+      font-size: 1rem;
+      opacity: 0.9;
+      margin-bottom: 1rem;
+    }
+
+    /* Divider Line - Natatanging Disenyo */
+    hr {
+      border: none;
+      height: 3px;
+      background: linear-gradient(90deg, #0A3D62, #38B2AC, #0A3D62);
+      width: 80%;
+      margin: 2rem auto;
+      border-radius: 3px;
+    }
+
+    /* Vision & Mission Section - Modern Layout */
+    .vm-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      padding: 0 5%;
+      margin-bottom: 3rem;
+    }
+
+    .vm-item {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border-top: 5px solid #0A3D62;
+      transition: transform 0.3s ease;
+    }
+
+    .vm-item:hover {
+      transform: translateY(-5px);
+    }
+
+    .vm-item h2 {
+      color: #0A3D62;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .vm-item h2::before {
+      content: "";
+      width: 30px;
+      height: 3px;
+      background-color: #38B2AC;
+      margin-right: 10px;
+    }
+
+    /* Motto Section - Standout Design */
+    .motto-section {
+      background: linear-gradient(rgba(10, 61, 98, 0.9), rgba(10, 61, 98, 0.9)), url("https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80") center/cover no-repeat;
+      color: white;
+      text-align: center;
+      padding: 4rem 5%;
+      margin: 0 5% 3rem 5%;
+      border-radius: 15px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+      position: relative;
+    }
+
+    .motto-section h2 {
+      font-size: 1.8rem;
+      font-style: italic;
+      font-weight: 500;
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    /* Offerings Section - Organized & Interactive */
+    .offerings-section {
+      padding: 0 5% 3rem 5%;
+      margin-bottom: 3rem;
+    }
+
+    .offerings-section h1 {
+      color: #0A3D62;
+      font-size: 1.8rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .offerings-section h1::after {
+      content: "";
+      width: 80px;
+      height: 3px;
+      background-color: #38B2AC;
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 3px;
+    }
+
+    .offerings-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .offerings-list p {
+      background-color: white;
+      padding: 1.2rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      font-weight: 500;
+      color: #2D3748;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+    }
+
+    .offerings-list p::before {
+      content: "\f0da";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      color: #38B2AC;
+      margin-right: 10px;
+      font-size: 1.1rem;
+    }
+
+    .offerings-list p:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      color: #0A3D62;
+    }
+
+    /* CHED Programs Section - Premium Look */
+    .ched-programs-section {
+      background-color: white;
+      padding: 3rem 5%;
+      margin: 0 5% 3rem 5%;
+      border-radius: 15px;
+      box-shadow: 0 4px 25px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    .ched-programs-section h3 {
+      color: #0A3D62;
+      font-size: 1.6rem;
+      margin-bottom: 1.5rem;
+      display: inline-block;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #38B2AC;
+    }
+
+    .ched-programs-section > p {
+      font-size: 1.1rem;
+      margin-bottom: 0.8rem;
+      color: #4A5568;
+    }
+
+    /* Program Images - Gallery Style */
+    .program-images-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin: 2.5rem 0;
+    }
+
+    .program-images-container img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .program-images-container img:hover {
+      transform: scale(1.03);
+    }
+
+    /* Contact Info - Stylish Display */
+    .contact-info {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .contact-info p {
+      display: flex;
+      align-items: center;
+      font-size: 1.1rem;
+      color: #2D3748;
+    }
+
+    .contact-info p i {
+      color: #0A3D62;
+      margin-right: 8px;
+      font-size: 1.2rem;
+    }
+
+    /* Register Link - Natatanging Button */
+    .register-link {
+      display: inline-block;
+      padding: 1rem 2.5rem;
+      background: linear-gradient(90deg, #0A3D62, #1E6F9F);
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 15px rgba(10, 61, 98, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .register-link:hover {
+      background: linear-gradient(90deg, #1E6F9F, #0A3D62);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(10, 61, 98, 0.4);
+    }
+
+    /* Footer (Dagdag para kumpleto) */
+    footer {
+      background-color: #0A3D62;
+      color: white;
+      text-align: center;
+      padding: 1.5rem 5%;
+      font-size: 0.9rem;
+    }
+
+    /* Responsive Design para sa Lahat ng Device */
+    @media (max-width: 768px) {
+      .vm-container {
+        grid-template-columns: 1fr;
+      }
+
+      .school-name {
+        font-size: 1.8rem;
+      }
+
+      .motto-section h2 {
+        font-size: 1.5rem;
+      }
+
+      .offerings-section h1 {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-container img {
+        width: 90px;
+        height: 90px;
+      }
+
+      .school-name {
+        font-size: 1.4rem;
+      }
+
+      .motto-section {
+        padding: 2.5rem 5%;
+      }
+
+      .register-link {
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Section -->
+  <div class="header-container">
+    <img src="1.jpg" alt="DCIT Logo">
+    <p class="school-name">DIPOLOG CITY INSTITUTE OF TECHNOLOGY</p>
+    <p class="school-address">National Highway, Minaog, Dipolog City</p>
+  </div>
+
+  <hr>
+
+  <!-- Vision & Mission Section -->
+  <div class="vm-container">
+    <div class="vm-item">
+      <h2>Vision</h2>
+      <p>A leading educational institution in the whole Zamboanga Peninsula (Western Mindanao) producing globally competitive graduates imbued with strong values of nationalism, deep concern for the environment and genuine love of God and fellowmen.</p>
+    </div>
+    <div class="vm-item">
+      <h2>Mission</h2>
+      <p>Like all educational institution operating in the Philippines, the Dipolog City Institute of Technology seeks to develop the whole person geared towards those ideals and values enunciated by our national leadership.</p>
+    </div>
+  </div>
+
+  <!-- Motto Section -->
+  <div class="motto-section">
+    <h2>"Achieving your ambition is our passion"</h2>
+  </div>
+
+  <!-- Offerings Section -->
+  <div class="offerings-section">
+    <h1>We Offer:</h1>
+    <div class="offerings-list">
+      <p>Housekeeping NC II</p>
+      <p>Caregiving NC II</p>
+      <p>Electrical Installation & Maintenance NC II</p>
+      <p>Food and Beverage Services NC II</p>
+      <p>Computer System Services NC II</p>
+      <p>Nursery</p>
+      <p>Kindergarten 1 & 2</p>
+      <p>Junior High School</p>
+      <p>Senior High School</p>
+      <p>College Programs</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- CHED Programs Section -->
+  <div class="ched-programs-section">
+    <h3>CHED RECOGNIZED PROGRAMS</h3>
+    <p>Bachelor of Science in Hospitality Management</p>
+    <p>Bachelor of Science in Computer Science</p>
+    <p>Bachelor in Elementary Education
+    </p> <!-- Pagtapos ng Bachelor in Elementary Education -->
+
+    <div class="program-images-container">
+      <div class="program-image-wrapper">
+        <img src="2.jpg" alt="Hospitality Management Program">
+      </div>
+      <div class="program-image-wrapper">
+        <img src="3.jpg" alt="Computer Science Program">
+      </div>
+      <div class="program-image-wrapper">
+        <img src="4.jpg" alt="Elementary Education Program">
+      </div>
+      <div class="program-image-wrapper">
+        <img src="5.jpg" alt="DCIT Campus Facilities">
+      </div>
+    </div>
+
+    <div class="contact-info">
+      <p><i class="fas fa-envelope"></i> DCIT@gmail.com</p>
+      <p><i class="fas fa-phone"></i> 212-2979 | 09103486221</p>
+    </div>
+
+    <!-- Font Awesome Link (Ilagay sa <head> ng page) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<style>
+/* Common Style para sa Lahat ng Button */
+.register-link {
+    display: inline-block;
+    width: 280px;
+    padding: 12px 15px;
+    margin: 10px 0; /* Spacing sa pagitan */
+    color: white !important;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none !important;
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    transition: all 0.2s ease;
+    border: none;
+}
+
+/* Custom Color para sa Bawat Button */
+/* 1. Register Here - Green (para sa paglikha ng bagong account) */
+.btn-register {
+    background-color: #4CAF50;
+}
+.btn-register:hover {
+    background-color: #388E3C;
+}
+
+/* 2. Access Registrar Admin Portal - Blue (para sa propesyonal na access) */
+.btn-portal {
+    background-color: #2196F3;
+}
+.btn-portal:hover {
+    background-color: #1976D2;
+}
+
+/* 3. Login to Admin Dashboard - Orange (para sa pagpasok sa sistema) */
+.btn-login {
+    background-color: #FF9800;
+}
+.btn-login:hover {
+    background-color: #F57C00;
+}
+
+/* Hover at Icon Style */
+.register-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+}
+.register-link i {
+    margin-right: 8px;
+    font-size: 17px;
+}
+</style>
+
+<!-- Mga Button na May Magkakaibang Kulay -->
+<a href="Project_re-coding.html" class="register-link btn-register">
+    <i class="fas fa-user-plus"></i> REGISTER HERE
+</a>
+
+<a href="Admin-1.html" class="register-link btn-portal">
+    <i class="fas fa-door-open"></i> Access Registrar Admin Portal
+</a>
+
+<a href="Admin.html" class="register-link btn-login">
+    <i class="fas fa-sign-in-alt"></i> Login to Admin Dashboard
+</a>
+
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <a href="#"><i class="fas fa-info-circle"></i> About Us</a>
+      <a href="#"><i class="fas fa-calendar-alt"></i> Events</a>
+      <a href="#"><i class="fas fa-question-circle"></i> FAQs</a>
+    </div>
+    <p>&copy; 2026 Dipolog City Institute of Technology. All Rights Reserved.</p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Successful</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Floating decorative elements with slide effect */
+        .decor-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            z-index: 0;
+            opacity: 0;
+        }
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            left: -100px;
+            transform: translateX(-50px);
+            animation: slideInLeft 1s ease-out forwards, float 8s ease-in-out infinite alternate 1s;
+        }
+        .circle-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -50px;
+            right: -50px;
+            transform: translateX(50px);
+            animation: slideInRight 1s ease-out forwards, float 10s ease-in-out infinite alternate-reverse 1s;
+        }
+        .circle-3 {
+            width: 150px;
+            height: 150px;
+            top: 20%;
+            right: 15%;
+            transform: translateY(50px);
+            animation: slideInUp 1s ease-out forwards, float 12s ease-in-out infinite alternate 1s;
+        }
+
+        /* Slide animations */
+        @keyframes slideInLeft {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(20px, -20px) scale(1.05); }
+        }
+
+        /* Main container with slide-in and 3D effect */
+        .success-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.1),
+                0 5px 15px rgba(118, 75, 162, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            text-align: center;
+            max-width: 550px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
+            /* Slide-in effect para sa container */
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideInUp 1.2s ease-out forwards 0.5s;
+        }
+
+        .success-container:hover {
+            transform: perspective(1000px) translateY(-5px) rotateX(2deg) rotateY(1deg);
+        }
+
+        /* Custom checkmark icon */
+        .check-wrapper {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 
+                0 8px 20px rgba(40, 167, 69, 0.3),
+                inset 0 2px 0 rgba(255, 255, 255, 0.5);
+            position: relative;
+            /* Small scale slide effect para sa checkmark */
+            opacity: 0;
+            transform: scale(0.8);
+            animation: scaleIn 0.8s ease-out forwards 1.5s;
+        }
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .check-wrapper::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.2), transparent);
+        }
+        .check-icon {
+            font-size: 60px;
+            color: white;
+            font-weight: bold;
+            transform: scale(1.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Text styles with sequential slide effect */
+        h1 {
+            color: #2d3748;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: slideInUp 0.6s ease-out forwards 2s;
+        }
+        .main-text {
+            color: #4a5568;
+            font-size: 19px;
+            font-weight: 300;
+            margin-bottom: 15px;
+            line-height: 1.7;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: slideInUp 0.6s ease-out forwards 2.2s;
+        }
+        .note {
+            color: #667eea;
+            font-size: 20px;
+            font-weight: 500;
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            display: inline-block;
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: slideInUp 0.6s ease-out forwards 2.4s;
+        }
+
+        /* Accent line */
+        .accent-line {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #20c997);
+            margin: 0 auto 35px;
+            border-radius: 3px;
+            opacity: 0;
+            transform: scaleX(0.5);
+            animation: scaleInX 0.8s ease-out forwards 2.6s;
+        }
+        @keyframes scaleInX {
+            from { transform: scaleX(0.5); opacity: 0; }
+            to { transform: scaleX(1); opacity: 1; }
+        }
+
+        /* Kaakit-akit na blue button with slide effect */
+        .back-btn {
+            padding: 12px 35px;
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: slideInUp 0.6s ease-out forwards 2.8s;
+        }
+        .back-btn:hover {
+            background: linear-gradient(135deg, #0056b3 0%, #003d80 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.4);
+        }
+        .back-btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+
+        /* Responsive design */
+        @media (max-width: 500px) {
+            .success-container {
+                padding: 40px 25px;
+            }
+            .check-wrapper {
+                width: 90px;
+                height: 90px;
+                margin-bottom: 20px;
+            }
+            .check-icon {
+                font-size: 45px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            .main-text, .note {
+                font-size: 17px;
+            }
+            .back-btn {
+                padding: 10px 30px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Decorative elements -->
+    <div class="decor-circle circle-1"></div>
+    <div class="decor-circle circle-2"></div>
+    <div class="decor-circle circle-3"></div>
+
+    <div class="success-container">
+        <div class="check-wrapper">
+            <div class="check-icon">✔</div>
+        </div>
+        
+        <h1>Registration Submitted Successfully!</h1>
+        <p class="main-text">Thank you for registering with us</p>
+        <p class="note">Kindly proceed to the DCIT Registrar's Office for final approval</p>
+        
+        <div class="accent-line"></div>
+
+        <!-- Back to registration form button -->
+        <a href="Project_re-coding.html" class="back-btn">Back to registration form</a>
+    </div>
+</body>
+</html>

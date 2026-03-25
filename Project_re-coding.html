@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Registration Form</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      padding: 30px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 35px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #0047ab;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+      color: #333;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1em;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #0047ab;
+      box-shadow: 0 0 0 2px rgba(0,71,171,0.1);
+    }
+    .course-options {
+      margin: 10px 0 20px;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .submit-btn {
+      width: 100%;
+      padding: 12px;
+      background: #0047ab;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .submit-btn:hover {
+      background: #003980;
+    }
+    #age {
+      background: #e9ecef;
+      cursor: not-allowed;
+    }
+    /* Bagong style para sa OTP section */
+    .send-otp-btn {
+      width: 100%;
+      padding: 10px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .send-otp-btn:hover {
+      background: #218838;
+    }
+    .otp-section {
+      margin-top: 15px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: #f8f9fa;
+      display: none; /* Itatago muna */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1><i class="fas fa-user-graduate"></i> Student Registration</h1>
+    <form id="regForm">
+      <label>First Name:</label>
+      <input type="text" id="fname" placeholder="Enter first name" required>
+
+      <label>Last Name:</label>
+      <input type="text" id="lname" placeholder="Enter last name" required>
+
+      <label>Date of Birth:</label>
+      <input type="date" id="dob" required onchange="calculateAge()">
+
+      <label>Age:</label>
+      <input type="number" id="age" readonly required>
+
+      <label>Course:</label>
+      <div class="course-options">
+        <label><input type="radio" name="course" value="BSCS" required> BSCS</label>
+        <label><input type="radio" name="course" value="BSHM"> BSHM</label>
+        <label><input type="radio" name="course" value="BEED"> BEED</label>
+      </div>
+
+      <label>Year Level:</label>
+      <select id="yearLevel" required>
+        <option value="">Select Year Level</option>
+        <option value="1st Year">1st Year</option>
+        <option value="2nd Year">2nd Year</option>
+        <option value="3rd Year">3rd Year</option>
+        <option value="4th Year">4th Year</option>
+      </select>
+
+      <label>Email:</label>
+      <input type="email" id="email" placeholder="Enter email" required>
+      <!-- Bagong button para mag-send ng OTP -->
+      <button type="button" class="send-otp-btn" onclick="sendOTP()"><i class="fas fa-paper-plane"></i> Send OTP to Email</button>
+
+      <!-- Bagong section para sa OTP -->
+      <div class="otp-section" id="otpSection">
+        <label><i class="fas fa-key"></i> Enter Verification OTP:</label>
+        <input type="text" id="otpInput" placeholder="Enter 6-digit OTP here" required>
+      </div>
+
+      <button type="submit" class="submit-btn">Save & Proceed to Subject Selection</button>
+    </form>
+  </div>
+
+  <!-- EmailJS Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+    // I-initialize ang EmailJS gamit ang iyong Public Key
+    emailjs.init("DLKQiO0uFRu9YjEGF"); // Palitan kung kailangan ng bago
+
+    let generatedOTP = "";
+
+    function calculateAge() {
+      const dobInput = document.getElementById('dob');
+      if (!dobInput.value) {
+        document.getElementById('age').value = "";
+        return;
+      }
+      const dob = new Date(dobInput.value);
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+      const monthDiff = today.getMonth() - dob.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) age--;
+      document.getElementById('age').value = age;
+    }
+
+    // Function para mag-send ng OTP sa email
+    function sendOTP() {
+      const fname = document.getElementById('fname').value.trim();
+      const lname = document.getElementById('lname').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const course = document.querySelector('input[name="course"]:checked')?.value;
+      const yearLevel = document.getElementById('yearLevel').value;
+      const age = document.getElementById('age').value;
+      const dob = document.getElementById('dob').value;
+
+      // I-check muna kung lahat ng field ay puno
+      if (!fname || !lname || !email || !course || !yearLevel || !age || !dob) {
+        alert("⚠️ Punan muna ang LAHAT ng required na field bago mag-send ng OTP!");
+        return;
+      }
+
+      // Gumawa ng 6-digit na OTP
+      generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+
+      // I-send ang OTP gamit ang EmailJS
+      emailjs.send("service_bnbv6i8", "template_jyy9jhu", { // Palitan ng iyong Service ID at Template ID
+        fname: fname,
+        lname: lname,
+        email: email,
+        course: course,
+        yearLevel: yearLevel,
+        otp: generatedOTP
+      })
+      .then(() => {
+        alert("✅ OTP naipadala sa iyong email!");
+        document.getElementById('otpSection').style.display = "block"; // Ipakita ang OTP section
+      }, (error) => {
+        alert(`❌ Error sa pagpapadala ng OTP: ${error.text || "Mangyaring subukan muli mamaya"}`);
+        console.log("EmailJS Error:", error);
+      });
+    }
+
+    document.getElementById('regForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // I-verify muna ang OTP
+      const enteredOTP = document.getElementById('otpInput').value.trim();
+      if (!generatedOTP || enteredOTP !== generatedOTP) {
+        alert("⚠️ Hindi wasto o kulang ang OTP! Mangyaring kunin muli ang OTP at ilagay ito.");
+        return;
+      }
+
+      // Kunin at i-save ang lahat ng datos ng estudyante
+      let database = JSON.parse(localStorage.getItem('dcitEnrollmentDB')) || { students: [], subjects: [] };
+      
+      const studentData = {
+        id: Date.now(),
+        fullName: `${document.getElementById('fname').value.trim()} ${document.getElementById('lname').value.trim()}`,
+        dob: document.getElementById('dob').value,
+        age: document.getElementById('age').value,
+        course: document.querySelector('input[name="course"]:checked').value,
+        yearLevel: document.getElementById('yearLevel').value,
+        email: document.getElementById('email').value.trim(),
+        subjects: []
+      };
+
+      database.students.push(studentData);
+      localStorage.setItem('dcitEnrollmentDB', JSON.stringify(database));
+      localStorage.setItem('currentStudentId', studentData.id.toString());
+
+      alert("✅ Registration Successful! Proceeding to Subject Selection...");
+      window.location.href = 'project_recoding2.html';
+    });
+  </script>
+</body>
+</html>

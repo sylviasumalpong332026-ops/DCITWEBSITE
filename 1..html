@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Enrollment Summary & Database View</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      padding: 30px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto 30px auto;
+      background: white;
+      padding: 35px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .all-students-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      padding: 35px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #0047ab;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    h2 {
+      color: #28a745;
+      margin-top: 25px;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 5px;
+    }
+    .summary-card {
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      line-height: 1.8em;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #0047ab;
+      color: white;
+    }
+    .btn-group {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .action-btn {
+      padding: 10px 25px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      transition: background 0.3s ease;
+    }
+    .new-reg-btn {
+      background: #28a745;
+      color: white;
+    }
+    .new-reg-btn:hover {
+      background: #218838;
+    }
+    .clear-btn {
+      background: #dc3545;
+      color: white;
+    }
+    .clear-btn:hover {
+      background: #c82333;
+    }
+    .archive-btn {
+      background: #003366;
+      color: white;
+    }
+    .archive-btn:hover {
+      background: #002244;
+    }
+    .admin-archive-btn {
+      background: #ff8c00;
+      color: white;
+    }
+    .admin-archive-btn:hover {
+      background: #e07b00;
+    }
+    .no-data {
+      text-align: center;
+      color: #666;
+      padding: 20px;
+      font-style: italic;
+    }
+    /* SUB-TABLE NG SUBJECT DETAILS */
+    .subject-subtable {
+      width: 100%;
+      margin: 5px 0;
+      border-collapse: collapse;
+    }
+    .subject-subtable th {
+      background: #f8f9fa;
+      color: #0047ab;
+      font-size: 0.9em;
+      padding: 8px;
+    }
+    .subject-subtable td {
+      font-size: 0.9em;
+      padding: 6px;
+    }
+    /* ARCHIVE BADGE */
+    .archive-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      background: #dc3545;
+      color: white;
+      font-size: 0.8em;
+      border-radius: 4px;
+      margin-left: 8px;
+    }
+    .active-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      background: #28a745;
+      color: white;
+      font-size: 0.8em;
+      border-radius: 4px;
+      margin-left: 8px;
+    }
+  /* --- BAGONG CSS PARA SA EDIT AT ADD SUBJECT --- */
+.edit-btn {
+  background: #17a2b8;
+  color: white;
+}
+.edit-btn:hover {
+  background: #138496;
+}
+.add-subject-btn {
+  background: #ffc107;
+  color: #212529;
+  padding: 6px 12px;
+  font-size: 0.9em;
+  margin-top: 10px;
+}
+.add-subject-btn:hover {
+  background: #e0a800;
+}
+/* MODAL STYLES */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 25px;
+  border: 1px solid #888;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 10px;
+}
+.close-btn {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.close-btn:hover,
+.close-btn:focus {
+  color: black;
+  text-decoration: none;
+}
+.modal-form-group {
+  margin-bottom: 15px;
+}
+.modal-form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+.modal-form-group input,
+.modal-form-group select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+.modal-btn-group {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+  </style>
+</head>
+<body>
+  <!-- Current Student Container -->
+  <div class="container">
+    <h1><i class="fas fa-database"></i> Enrollment Database Summary</h1>
+    <div id="currentStudentSummary">
+      <h2><i class="fas fa-user-circle"></i> Current Student Enrollment Details</h2>
+      <div class="summary-card" id="studentDetails">
+        <p class="no-data">No student data available. Please complete registration and subject selection first.</p>
+      </div>
+    </div>
+    <div class="btn-group">
+      <a href="Project_re-coding.html" class="action-btn new-reg-btn"><i class="fas fa-plus"></i> New Registration</a>
+      <button id="archiveCurrentBtn" class="action-btn archive-btn" onclick="archiveCurrentStudent()" style="display: none;"><i class="fas fa-archive"></i> Archive This Student</button>
+      <a href="" class="action-btn admin-archive-btn"><i class="fas fa-shield-alt"></i> Refresh </a>
+      <button class="action-btn clear-btn" onclick="clearDatabase()"><i class="fas fa-trash"></i> Clear All Data</button>
+    </div>
+  </div>
+
+  <!-- All Registered Students Container -->
+  <div class="all-students-container">
+    <h2><i class="fas fa-users"></i> All Active Registered Students</h2>
+    <table id="allStudentsTable">
+      <thead>
+        <tr>
+          <th>Student ID</th>
+          <th>Full Name</th>
+          <th>Status</th>
+          <th>Course & Year</th>
+          <th>Email</th>
+          <th>Selected Subjects (with Details)</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="allStudentsBody">
+        <tr><td colspan="7" class="no-data">Database is empty.</td></tr>
+      </tbody>
+    </table>
+    
+    <!-- --- BAGONG HTML PARA SA MODALS --- -->
+<!-- Edit Student Modal -->
+<div id="editStudentModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeEditModal()">&times;</span>
+    <h3><i class="fas fa-edit"></i> Edit Student Details</h3>
+    <form id="editStudentForm">
+      <input type="hidden" id="editStudentId">
+      <div class="modal-form-group">
+        <label for="editFullName">Full Name</label>
+        <input type="text" id="editFullName" required>
+      </div>
+      <div class="modal-form-group">
+        <label for="editDob">Date of Birth</label>
+        <input type="date" id="editDob" required>
+      </div>
+      <div class="modal-form-group">
+        <label for="editAge">Age</label>
+        <input type="number" id="editAge" min="1" required>
+      </div>
+      <div class="modal-form-group">
+        <label for="editCourse">Course</label>
+        <input type="text" id="editCourse" required>
+      </div>
+      <div class="modal-form-group">
+        <label for="editYearLevel">Year Level</label>
+        <input type="text" id="editYearLevel" required>
+      </div>
+      <div class="modal-form-group">
+        <label for="editEmail">Email</label>
+        <input type="email" id="editEmail" required>
+      </div>
+      <div class="modal-btn-group">
+        <button type="button" class="action-btn clear-btn" onclick="closeEditModal()">Cancel</button>
+        <button type="submit" class="action-btn edit-btn">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Add Subject Modal -->
+<div id="addSubjectModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeAddSubjectModal()">&times;</span>
+    <h3><i class="fas fa-book"></i> Add New Subject</h3>
+    <form id="addSubjectForm">
+      <input type="hidden" id="addSubjStudentId">
+      <div class="modal-form-group">
+        <label for="addSubjName">Subject Name/Code</label>
+        <input type="text" id="addSubjName" required>
+      </div>
+      <div class="modal-form-group">
+        <label for="addSubjLabQty">Lab Quantity</label>
+        <input type="number" id="addSubjLabQty" min="0" value="0" required>
+      </div>
+      <div class="modal-form-group">
+        <label for="addSubjUnits">Units</label>
+        <input type="number" id="addSubjUnits" min="0" step="0.5" value="0" required>
+      </div>
+      <div class="modal-form-group">
+        <label for="addSubjTotalHours">Total Hours</label>
+        <input type="number" id="addSubjTotalHours" min="0" value="0" required>
+      </div>
+      <div class="modal-btn-group">
+        <button type="button" class="action-btn clear-btn" onclick="closeAddSubjectModal()">Cancel</button>
+        <button type="submit" class="action-btn add-subject-btn">Add Subject</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+    
+    <!-- --- BAGONG HTML PARA SA MODALS --- -->
+<!-- Edit Student Modal -->
+<div id="editStudentModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeEditModal()">&times;</span>
+    <h3><i class="fas fa-edit"></i> Edit Student Details</h3>
+    <form id="editStudentForm">
+      <input type="hidden" id="editStudentId">
+      <div class="modal-form-group">
+        <label for="editFullName">Full Name</label>
+        <input type="text" id="editFullName" required>
+      </div>
+      <div class="modal-form-group">
+        <label for="editDob">Date of Birth</label>
+        <input type="date" id="editDob" required>
+      </div>
+      <div class="modal-form-group">
+        <label for="editAge">Age</label>
+        <input type="number" id="editAge" min="1" required>
+      </div>
+      <div class="modal-form-group">
+        <label for="editCourse">Course</label>
+        <input type="text" id="editCourse" required>
+      </div>
+      <div class="modal-form-group">
+        <label for="editYearLevel">Year Level</label>
+        <input type="text" id="editYearLevel" required>
+      </div>
+      <div class="modal-form-group">
+        <label for="editEmail">Email</label>
+        <input type="email" id="editEmail" required>
+      </div>
+      <div class="modal-btn-group">
+        <button type="button" class="action-btn clear-btn" onclick="closeEditModal()">Cancel</button>
+        <button type="submit" class="action-btn edit-btn">Save Changes</button>
+      </div>
+    </form>
+  
+</div>
+
+<!-- Add Subject Modal -->
+<div id="addSubjectModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeAddSubjectModal()">&times;</span>
+    <h3><i class="fas fa-book"></i> Add New Subject</h3>
+    <form id="addSubjectForm">
+      <input type="hidden" id="addSubjStudentId">
+      <div class="modal-form-group">
+        <label for="addSubjName">Subject Name/Code</label>
+        <input type="text" id="addSubjName" required>
+      </div>
+      <div class="modal-form-group">
+        <label for="addSubjLabQty">Lab Quantity</label>
+        <input type="number" id="addSubjLabQty" min="0" value="0" required>
+      </div>
+      <div class="modal-form-group">
+        <label for="addSubjUnits">Units</label>
+        <input type="number" id="addSubjUnits" min="0" step="0.5" value="0" required>
+      </div>
+      <div class="modal-form-group">
+        <label for="addSubjTotalHours">Total Hours</label>
+        <input type="number" id="addSubjTotalHours" min="0" value="0" required>
+      </div>
+      <div class="modal-btn-group">
+        <button type="button" class="action-btn clear-btn" onclick="closeAddSubjectModal()">Cancel</button>
+        <button type="submit" class="action-btn add-subject-btn">Add Subject</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+  </div>
+
+ <script>
+    
+    // --- BAGONG JAVASCRIPT FUNCTIONS PARA SA EDIT AT ADD SUBJECT ---
+// Buksan ang Edit Student Modal
+function openEditModal(studentId) {
+  const student = database.students.find(s => String(s.id) === String(studentId));
+  if (!student) {
+    alert("Student not found!");
+    return;
+  }
+
+  // Ilagay ang kasalukuyang datos sa form
+  document.getElementById('editStudentId').value = student.id;
+  document.getElementById('editFullName').value = student.fullName;
+  document.getElementById('editDob').value = student.dob;
+  document.getElementById('editAge').value = student.age;
+  document.getElementById('editCourse').value = student.course;
+  document.getElementById('editYearLevel').value = student.yearLevel;
+  document.getElementById('editEmail').value = student.email;
+
+  // Ipakitang ang modal
+  document.getElementById('editStudentModal').style.display = 'block';
+}
+
+// Isara ang Edit Student Modal
+function closeEditModal() {
+  document.getElementById('editStudentModal').style.display = 'none';
+}
+
+// I-save ang mga pagbabago sa Student Details
+document.getElementById('editStudentForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const studentId = document.getElementById('editStudentId').value;
+  const studentIndex = database.students.findIndex(s => String(s.id) === String(studentId));
+
+  if (studentIndex !== -1) {
+    database.students[studentIndex] = {
+      ...database.students[studentIndex],
+      fullName: document.getElementById('editFullName').value,
+      dob: document.getElementById('editDob').value,
+      age: document.getElementById('editAge').value,
+      course: document.getElementById('editCourse').value,
+      yearLevel: document.getElementById('editYearLevel').value,
+      email: document.getElementById('editEmail').value
+    };
+
+    // I-save sa localStorage
+    localStorage.setItem('dcitEnrollmentDB', JSON.stringify(database));
+    alert("Student details updated successfully!");
+    closeEditModal();
+    // I-refresh ang display
+    showCurrentStudentDetails();
+    showAllStudents();
+  }
+});
+
+// Buksan ang Add Subject Modal
+function openAddSubjectModal(studentId) {
+  document.getElementById('addSubjStudentId').value = studentId;
+  document.getElementById('addSubjectModal').style.display = 'block';
+}
+
+// Isara ang Add Subject Modal
+function closeAddSubjectModal() {
+  document.getElementById('addSubjectModal').style.display = 'none';
+}
+
+// I-save ang bagong Subject
+document.getElementById('addSubjectForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const studentId = document.getElementById('addSubjStudentId').value;
+  const studentIndex = database.students.findIndex(s => String(s.id) === String(studentId));
+
+  if (studentIndex !== -1) {
+    const newSubject = {
+      name: document.getElementById('addSubjName').value,
+      labQuantity: document.getElementById('addSubjLabQty').value,
+      units: document.getElementById('addSubjUnits').value,
+      totalHours: document.getElementById('addSubjTotalHours').value
+    };
+
+    database.students[studentIndex].subjects.push(newSubject);
+    // I-save sa localStorage
+    localStorage.setItem('dcitEnrollmentDB', JSON.stringify(database));
+    alert("Subject added successfully!");
+    closeAddSubjectModal();
+    // I-refresh ang display
+    showCurrentStudentDetails();
+    showAllStudents();
+  }
+});
+
+// Isara ang modal kapag nag-click sa labas nito
+window.addEventListener('click', function(e) {
+  const editModal = document.getElementById('editStudentModal');
+  const addSubjModal = document.getElementById('addSubjectModal');
+  if (e.target === editModal) editModal.style.display = 'none';
+  if (e.target === addSubjModal) addSubjModal.style.display = 'none';
+});
+
+
+// --- PAGBABAGO SA showCurrentStudentDetails() FUNCTION ---
+// Hanapin mo ang kasalukuyang showCurrentStudentDetails() function at idagdag ang dalawang bagong button display:
+function showCurrentStudentDetails() {
+  const detailsContainer = document.getElementById('studentDetails');
+  const archiveBtn = document.getElementById('archiveCurrentBtn');
+  // --- IDAGDAG ANG DALAWANG ITO ---
+  const editBtn = document.getElementById('editCurrentBtn');
+  const addSubjBtn = document.getElementById('addSubjCurrentBtn');
+  
+  if (currentStudent) {
+    archiveBtn.style.display = 'block';
+    editBtn.style.display = 'block'; // Ipakita ang edit button
+    addSubjBtn.style.display = 'block'; // Ipakita ang add subject button
+    // ... (nananatili ang ibang code dito)
+  } else {
+    archiveBtn.style.display = 'none';
+    editBtn.style.display = 'none'; // Itago ang edit button
+    addSubjBtn.style.display = 'none'; // Itago ang add subject button
+    // ... (nananatili ang ibang code dito)
+  }
+}
+
+    // FUNCION PARA KUMUHA NG TAMANG DATABASE MULA SA LOCALSTORAGE
+    function getDatabase() {
+      const stored = localStorage.getItem('dcitEnrollmentDB');
+      if (!stored) {
+        return { students: [], archivedStudents: [] };
+      }
+      const db = JSON.parse(stored);
+      
+      // TINIYAK NA MAY ARCHIVED STUDENTS ARRAY AT KUMPLETO ANG DETALYE
+      db.students = db.students || [];
+      db.archivedStudents = db.archivedStudents || [];
+      
+      // Format students data
+      db.students = db.students.map(student => ({
+        ...student,
+        id: student.id || '',
+        fullName: student.fullName || '',
+        dob: student.dob || 'Not provided',
+        age: student.age || 'Not provided',
+        course: student.course || '',
+        yearLevel: student.yearLevel || '',
+        email: student.email || 'Not provided',
+        subjects: (student.subjects || []).map(subject => ({
+          name: subject.name || subject || 'Unnamed Subject',
+          labQuantity: subject.labQuantity || 0,
+          units: subject.units || 0,
+          totalHours: subject.totalHours || 0
+        }))
+      }));
+
+      // Format archived students data
+      db.archivedStudents = db.archivedStudents.map(student => ({
+        ...student,
+        id: student.id || '',
+        fullName: student.fullName || '',
+        dob: student.dob || 'Not provided',
+        age: student.age || 'Not provided',
+        course: student.course || '',
+        yearLevel: student.yearLevel || '',
+        email: student.email || 'Not provided',
+        subjects: (student.subjects || []).map(subject => ({
+          name: subject.name || subject || 'Unnamed Subject',
+          labQuantity: subject.labQuantity || 0,
+          units: subject.units || 0,
+          totalHours: subject.totalHours || 0
+        }))
+      }));
+
+      return db;
+    }
+
+    // INITIALIZE VARIABLES
+    let database = getDatabase();
+    const currentStudentId = localStorage.getItem('currentStudentId');
+    // Important: Ensure currentStudent is correctly found based on string comparison
+    const currentStudent = database.students.find(s => String(s.id) === String(currentStudentId));
+
+
+    // IPAPAKITA ANG KASALUKUYANG ESTUDYANTE
+    function showCurrentStudentDetails() {
+      const detailsContainer = document.getElementById('studentDetails');
+      const archiveBtn = document.getElementById('archiveCurrentBtn');
+      
+      if (currentStudent) {
+        archiveBtn.style.display = 'block';
+
+        let subjectsTable = '';
+        if (currentStudent.subjects.length > 0) {
+          subjectsTable = `
+            <table class="subject-subtable">
+              <thead>
+                <tr>
+                  <th>Subject Name/Code</th>
+                  <th>Lab Quantity</th>
+                  <th>Units</th>
+                  <th>Total Hours</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${currentStudent.subjects.map(sub => `
+                  <tr>
+                    <td>${sub.name}</td>
+                    <td>${sub.labQuantity}</td>
+                    <td>${sub.units}</td>
+                    <td>${sub.totalHours}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          `;
+        } else {
+          subjectsTable = '<p>No subjects selected yet.</p>';
+        }
+
+        detailsContainer.innerHTML = `
+          <p><strong>Student ID:</strong> ${currentStudent.id}</p>
+          <p><strong>Full Name:</strong> ${currentStudent.fullName}</p>
+          <p><strong>Date of Birth:</strong> ${currentStudent.dob}</p>
+          <p><strong>Age:</strong> ${currentStudent.age}</p>
+          <p><strong>Course & Year:</strong> ${currentStudent.course} - ${currentStudent.yearLevel}</p>
+          <p><strong>Email:</strong> ${currentStudent.email}</p>
+          <p><strong>Account Status:</strong> <span class="active-badge">ACTIVE</span></p>
+          <p><strong>Subject Details:</strong></p>
+          ${subjectsTable}
+        `;
+      } else {
+        // If no current student, hide archive button and show no data message
+        archiveBtn.style.display = 'none';
+        detailsContainer.innerHTML = '<p class="no-data">No student data available. Please complete registration and subject selection first.</p>';
+      }
+    }
+
+    // IPAPAKITA ANG LAHAT NG ACTIVE NA ESTUDYANTE
+    function showAllStudents() {
+      const tableBody = document.getElementById('allStudentsBody');
+      
+      if (database.students.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="7" class="no-data">No active students in database.</td></tr>';
+        return;
+      }
+
+      tableBody.innerHTML = '';
+      database.students.forEach(student => {
+        let subjectsTable = '';
+        if (student.subjects.length > 0) {
+          subjectsTable = `
+            <table class="subject-subtable">
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th>Lab Qty</th>
+                  <th>Units</th>
+                  <th>Total Hrs</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${student.subjects.map(sub => `
+                  <tr>
+                    <td>${sub.name}</td>
+                    <td>${sub.labQuantity}</td>
+                    <td>${sub.units}</td>
+                    <td>${sub.totalHours}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          `;
+        } else {
+          subjectsTable = 'None';
+        }
+
+        const row = `<tr>
+  <td>${student.id}</td>
+  <td>${student.fullName}</td>
+  <td><span class="active-badge">ACTIVE</span></td>
+  <td>${student.course} - ${student.yearLevel}</td>
+  <td>${student.email}</td>
+  <td>${subjectsTable}</td>
+  <td>
+    <button class="action-btn edit-btn" style="padding: 6px 12px; font-size: 0.9em; margin-bottom: 5px;" onclick="openEditModal('${student.id}')"><i class="fas fa-edit"></i> Edit</button>
+    <button class="action-btn add-subject-btn" style="padding: 6px 12px; font-size: 0.9em; margin-bottom: 5px;" onclick="openAddSubjectModal('${student.id}')"><i class="fas fa-book"></i> Add Subject</button>
+    <button class="action-btn archive-btn" style="padding: 6px 12px; font-size: 0.9em;" onclick="archiveStudent('${student.id}')"><i class="fas fa-archive"></i> Archive</button>
+  </td>
+</tr>`;
+
+        tableBody.innerHTML += row;
+      });
+    }
+
+    // I-ARCHIVE ANG KASALUKUYANG ESTUDYANTE
+    function archiveCurrentStudent() {
+      if (!currentStudent) {
+        alert("No current student selected to archive.");
+        return;
+      }
+      
+      if (confirm(`Are you sure you want to archive student ${currentStudent.fullName} (ID: ${currentStudent.id})?`)) {
+        const studentIndex = database.students.findIndex(s => String(s.id) === String(currentStudent.id));
+        if (studentIndex !== -1) {
+          // Ilipat sa archived at alisin sa active
+          database.archivedStudents.push(database.students[studentIndex]);
+          database.students.splice(studentIndex, 1);
+          
+          localStorage.setItem('dcitEnrollmentDB', JSON.stringify(database));
+          localStorage.removeItem('currentStudentId'); // Clear current student after archiving
+          
+          alert("Student archived successfully! Reloading page to update display.");
+          window.location.reload(); // Reload the current page to update the active students list
+        } else {
+          alert("Current student not found in active list.");
+        }
+      }
+    }
+
+    // I-ARCHIVE ANG ISANG PARTIKULAR NA ESTUDYANTE
+    function archiveStudent(studentId) {
+      // Ensure studentId is treated as a string for comparison if IDs can be mixed types
+      const student = database.students.find(s => String(s.id) === String(studentId));
+      if (!student) {
+        alert("Student not found in active list.");
+        return;
+      }
+      
+      if (confirm(`Are you sure you want to archive student ${student.fullName} (ID: ${studentId})?`)) {
+        const studentIndex = database.students.findIndex(s => String(s.id) === String(studentId));
+        if (studentIndex !== -1) {
+          // Ilipat sa archived at alisin sa active
+          database.archivedStudents.push(database.students[studentIndex]);
+          database.students.splice(studentIndex, 1);
+          
+          localStorage.setItem('dcitEnrollmentDB', JSON.stringify(database));
+          
+          alert("Student archived successfully! Reloading page to update display.");
+          window.location.reload(); // Reload the current page to update the active students list
+        }
+      }
+    }
+
+    // LINISIN ANG BUONG DATABASE
+    function clearDatabase() {
+      if (confirm("WARNING: This will delete ALL active and archived enrollment data permanently. Are you sure?")) {
+        localStorage.removeItem('dcitEnrollmentDB');
+        localStorage.removeItem('currentStudentId');
+        alert("All database data cleared successfully!");
+        window.location.reload();
+      }
+    }
+
+    // PATAKBUHIN ANG MGA FUNCTION
+    showCurrentStudentDetails();
+    showAllStudents();
+    
+    
+  </script>
+
+</body>
+</html>

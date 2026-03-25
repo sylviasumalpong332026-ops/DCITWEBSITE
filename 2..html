@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin - Student Enrollment Archive</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #e9ecef;
+      padding: 15px;
+    }
+    /* Admin Header Style */
+    .admin-header {
+      max-width: 100%;
+      margin: 0 auto 20px auto;
+      background: #0047ab;
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .admin-header h1 {
+      font-size: 1.5em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .nav-btn {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-weight: 600;
+      text-decoration: none;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-size: 0.9em;
+    }
+    .back-btn { background: #ff8c00; color: white; }
+    .back-btn:hover { background: #e07b00; }
+    .refresh-btn { background: #28a745; }
+    .refresh-btn:hover { background: #218838; }
+    .clear-archive-btn { background: #dc3545; }
+    .clear-archive-btn:hover { background: #c82333; }
+
+    /* Archive Container Style */
+    .archive-container {
+      max-width: 100%;
+      margin: 0 auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .archive-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #0047ab;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .archive-header h2 {
+      color: #0047ab;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .search-box {
+      padding: 8px 15px;
+      width: 100%;
+      max-width: 300px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1em;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+    .stat-card {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    }
+    .stat-card i {
+      font-size: 2em;
+      color: #0047ab;
+      margin-bottom: 8px;
+    }
+    .stat-number {
+      font-size: 1.8em;
+      font-weight: 700;
+      color: #28a745;
+    }
+    .stat-label {
+      font-size: 0.9em;
+      color: #666;
+    }
+
+    /* Table Style */
+    #archiveTable {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      overflow-x: auto;
+      display: block;
+    }
+    #archiveTable th {
+      background: #0047ab;
+      color: white;
+      padding: 12px;
+      text-align: left;
+      font-size: 0.95em;
+    }
+    #archiveTable td {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      vertical-align: top;
+      font-size: 0.95em;
+    }
+    #archiveTable tr:hover {
+      background: #f8f9fa;
+    }
+    .subject-subtable {
+      width: 100%;
+      margin: 5px 0;
+      border-collapse: collapse;
+      font-size: 0.85em;
+    }
+    .subject-subtable th {
+      background: #f8f9fa;
+      color: #0047ab;
+      padding: 5px;
+      font-size: 0.8em;
+    }
+    .subject-subtable td {
+      padding: 3px;
+      font-size: 0.8em;
+    }
+    .archive-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      background: #dc3545;
+      color: white;
+      font-size: 0.8em;
+      border-radius: 4px;
+    }
+    .no-archive-data {
+      text-align: center;
+      color: #666;
+      padding: 40px;
+      font-style: italic;
+      font-size: 1.1em;
+    }
+  </style>
+</head>
+<body>
+  <!-- Admin Header -->
+  <div class="admin-header">
+    <h1><i class="fas fa-shield-alt"></i> Admin Enrollment Archive</h1>
+    <div class="nav-buttons">
+      <a href="1..html" class="nav-btn back-btn"><i class="fas fa-arrow-left"></i> View Summary</a>
+      <button class="nav-btn refresh-btn" onclick="loadArchiveData()"><i class="fas fa-sync-alt"></i> Refresh Data</button>
+      <button class="nav-btn clear-archive-btn" onclick="clearArchive()"><i class="fas fa-trash"></i> Clear Archive</button>
+    </div>
+  </div>
+
+  <!-- Archive Main Container -->
+  <div class="archive-container">
+    <div class="archive-header">
+      <h2><i class="fas fa-archive"></i> All Archived Students</h2>
+      <input type="text" id="searchInput" class="search-box" placeholder="Search by ID, Name or Course...">
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <i class="fas fa-users"></i>
+        <div class="stat-number" id="totalArchived">0</div>
+        <div class="stat-label">Total Archived Students</div>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-laptop-code"></i>
+        <div class="stat-number" id="countBSCS">0</div>
+        <div class="stat-label">BSCS Students</div>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-utensils"></i>
+        <div class="stat-number" id="countBSHM">0</div>
+        <div class="stat-label">BSHM Students</div>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <div class="stat-number" id="countBEED">0</div>
+        <div class="stat-label">BEED Students</div>
+      </div>
+    </div>
+
+    <!-- Archive Table -->
+    <table id="archiveTable">
+      <thead>
+        <tr>
+          <th>Student ID</th>
+          <th>Full Name</th>
+          <th>Date of Birth</th>
+          <th>Age</th>
+          <th>Course & Year</th>
+          <th>Email</th>
+          <th>Status</th>
+          <th>Selected Subjects</th>
+        </tr>
+      </thead>
+      <tbody id="archiveTableBody">
+        <tr><td colspan="8" class="no-archive-data">No archived student data available.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+ <script>
+    function getDatabase() {
+      const stored = localStorage.getItem('dcitEnrollmentDB');
+      if (!stored) {
+        return { students: [], archivedStudents: [] };
+      }
+      const db = JSON.parse(stored);
+      // Tiyakin na mayroong tamang arrays
+      if (!Array.isArray(db.students)) db.students = [];
+      if (!Array.isArray(db.archivedStudents)) db.archivedStudents = [];
+      
+      // I-format ang lahat ng datos
+      db.archivedStudents = db.archivedStudents.map(student => ({
+        id: student.id || 'No ID',
+        fullName: student.fullName || 'No Name',
+        dob: student.dob || 'Not provided',
+        age: student.age || 'Not provided',
+        course: student.course || 'No Course',
+        yearLevel: student.yearLevel || 'No Year',
+        email: student.email || 'Not provided',
+        subjects: (student.subjects || []).map(sub => ({
+          name: sub.name || 'Unnamed',
+          labQuantity: sub.labQuantity || 0,
+          units: sub.units || 0,
+          totalHours: sub.totalHours || 0
+        }))
+      }));
+      return db;
+    }
+
+    // --- LOAD AND DISPLAY ARCHIVED DATA ---
+    function loadArchiveData() {
+      const db = getDatabase();
+      const tableBody = document.getElementById('archiveTableBody');
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+
+      // Filter archived students based on search
+      const filteredStudents = db.archivedStudents.filter(student => {
+        return String(student.id).toLowerCase().includes(searchTerm) || // Added String() conversion
+               student.fullName.toLowerCase().includes(searchTerm) ||
+               student.course.toLowerCase().includes(searchTerm);
+      });
+
+      // Update statistics
+      document.getElementById('totalArchived').textContent = db.archivedStudents.length;
+      document.getElementById('countBSCS').textContent = db.archivedStudents.filter(s => s.course === 'BSCS').length;
+      document.getElementById('countBSHM').textContent = db.archivedStudents.filter(s => s.course === 'BSHM').length;
+      document.getElementById('countBEED').textContent = db.archivedStudents.filter(s => s.course === 'BEED').length;
+
+      // Display filtered data
+      if (filteredStudents.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="8" class="no-archive-data">No archived data found.</td></tr>';
+        return;
+      }
+
+      tableBody.innerHTML = ''; // Clear existing table rows
+      filteredStudents.forEach(student => {
+        // Create subject sub-table
+        let subjectsTable = '';
+        if (student.subjects.length > 0) {
+          subjectsTable = `
+            <table class="subject-subtable">
+              <thead>
+                <tr>
+                  <th>Subject Name</th>
+                  <th>Lab Qty</th>
+                  <th>Units</th>
+                  <th>Total Hrs</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${student.subjects.map(sub => `
+                  <tr>
+                    <td>${sub.name}</td>
+                    <td>${sub.labQuantity}</td>
+                    <td>${sub.units}</td>
+                    <td>${sub.totalHours}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          `;
+        } else {
+          subjectsTable = 'No subjects selected';
+        }
+
+        // Add student row
+        const row = `
+          <tr>
+            <td>${student.id}</td>
+            <td>${student.fullName}</td>
+            <td>${student.dob}</td>
+            <td>${student.age}</td>
+            <td>${student.course} - ${student.yearLevel}</td>
+            <td>${student.email}</td>
+            <td><span class="archive-badge">ARCHIVED</span></td>
+            <td>${subjectsTable}</td>
+          </tr>
+        `;
+        tableBody.innerHTML += row; // <<< ITO ANG NAWAWALA
+      });
+    }
+
+    // --- CLEAR ONLY ARCHIVED DATA ---
+    function clearArchive() {
+      if (confirm("WARNING: This will delete ALL archived data permanently. Are you sure?")) {
+        const db = getDatabase();
+        db.archivedStudents = [];
+        localStorage.setItem('dcitEnrollmentDB', JSON.stringify(db));
+        alert("Archive cleared successfully!");
+        loadArchiveData(); // Reload data to show empty table
+      }
+    }
+
+    // --- SEARCH FUNCTION ---
+    document.getElementById('searchInput').addEventListener('keyup', loadArchiveData);
+
+    // --- AUTO-LOAD DATA ON PAGE OPEN ---
+    window.onload = loadArchiveData; 
+</script>
+
+</body>
+</html>
